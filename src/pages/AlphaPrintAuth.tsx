@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { User, Mail, Lock, UserPlus, LogIn, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { sendWelcomeEmail } from "@/services/emailService";
 
 const AlphaPrintAuth = () => {
   const { toast } = useToast();
@@ -48,9 +49,18 @@ const AlphaPrintAuth = () => {
 
       if (error) throw error;
 
+      // Send welcome email from CEO Shaze Sanches
+      try {
+        await sendWelcomeEmail(formData.email, formData.fullName);
+        console.log('Welcome email sent successfully');
+      } catch (emailError) {
+        console.error('Welcome email failed (but account created):', emailError);
+        // Don't fail the whole process if email fails
+      }
+
       toast({
         title: "Account created!",
-        description: "Please check your email to verify your account.",
+        description: "Welcome! Please check your email to verify your account and look for a special message from our CEO.",
       });
 
       // Clear form

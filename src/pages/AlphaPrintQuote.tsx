@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { sendQuoteNotificationEmail, sendCustomerConfirmationEmail } from "@/services/emailService";
 
 const AlphaPrintQuote = () => {
   const { toast } = useToast();
@@ -122,6 +123,35 @@ const AlphaPrintQuote = () => {
         .single();
 
       if (error) throw error;
+
+      // Send email notifications
+      try {
+        // Prepare email data
+        const emailData = {
+          name: formData.name,
+          email: formData.email,
+          company: formData.company,
+          phone: formData.phone,
+          projectDescription: formData.projectDescription,
+          quantity: parseInt(formData.quantity),
+          deadline: formData.deadline?.toISOString(),
+          requirements: formData.requirements,
+          attachments: attachmentData,
+        };
+
+        // Send notification to business owner
+        const businessNotification = await sendQuoteNotificationEmail(emailData);
+        
+        // Send confirmation to customer
+        const customerConfirmation = await sendCustomerConfirmationEmail(formData.email, formData.name);
+        
+        if (businessNotification.success || customerConfirmation.success) {
+          console.log('Email notifications sent successfully');
+        }
+      } catch (emailError) {
+        console.error('Email notification failed (but quote saved):', emailError);
+        // Don't fail the whole process if email fails
+      }
 
       toast({
         title: "Quote request submitted!",
