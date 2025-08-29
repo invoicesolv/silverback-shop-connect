@@ -169,7 +169,7 @@ export default async function handler(req, res) {
 
     } else if (req.method === 'DELETE') {
       // Delete discount code (expecting ID in URL query or body)
-      const { id } = req.query.id ? req.query : req.body;
+      const id = req.query.id || req.body.id;
       
       if (!id) {
         return res.status(400).json({ error: 'ID is required for deletion' });
