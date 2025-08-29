@@ -364,10 +364,11 @@ const AdminDashboard = () => {
 
     try {
       const headers = await getApiHeaders();
-      const url = getApiUrl(`/api/admin/discount-codes?id=${codeId}`);
+      const url = getApiUrl('/api/admin/discount-codes');
       const response = await fetch(url, {
         method: 'DELETE',
-        headers
+        headers,
+        body: JSON.stringify({ id: codeId })
       });
 
       const data = await response.json();
