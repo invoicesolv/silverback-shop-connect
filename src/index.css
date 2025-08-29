@@ -105,6 +105,21 @@ All colors MUST be HSL.
     background-clip: text;
   }
   
+  /* Light grey text for headlines - simple and visible */
+  .text-light-grey {
+    color: hsl(0 0% 75%);
+  }
+  
+  /* Enhanced gradient for mobile/tablet visibility - Pure silver/white */
+  @media (max-width: 1024px) {
+    .text-gradient {
+      background: linear-gradient(135deg, hsl(0 0% 100%), hsl(0 0% 90%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+  
   /* Animation utilities */
   .animate-float {
     animation: float 6s ease-in-out infinite;

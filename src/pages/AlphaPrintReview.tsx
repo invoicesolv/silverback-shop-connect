@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AlphaPrintHeader } from "@/components/AlphaPrintHeader";
 import { AlphaPrintFooter } from "@/components/AlphaPrintFooter";
@@ -6,10 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, Package, CreditCard, Truck, ArrowLeft, ArrowRight } from "lucide-react";
+import CheckoutForm from "@/components/CheckoutForm";
+import { PaymentIntent } from "@/services/stripeService";
 
 const AlphaPrintReview = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [orderComplete, setOrderComplete] = useState(false);
+  const [orderDetails, setOrderDetails] = useState<any>(null);
   
   const { product, variants, quantity, designFiles, isCustomDesign, designPosition, designSize } = location.state || {};
 
@@ -41,8 +47,128 @@ const AlphaPrintReview = () => {
   }, 0);
   const subtotal = (basePrice + variantPrices) * quantity;
   const tax = subtotal * 0.08; // 8% tax
-  const shipping = subtotal > 50 ? 0 : 9.99; // Free shipping over $50
+  const shipping = subtotal > 50 ? 0 : 9.99; // Free shipping over €50
   const total = subtotal + tax + shipping;
+
+  const handleProceedToCheckout = () => {
+    setShowCheckout(true);
+  };
+
+  const handlePaymentSuccess = (result: any) => {
+    setOrderDetails(result);
+    setOrderComplete(true);
+    setShowCheckout(false);
+  };
+
+  const handlePaymentError = (error: string) => {
+    console.error('Payment error:', error);
+    // Error is handled by the CheckoutForm component with toast
+  };
+
+  const preparePaymentData = (): PaymentIntent => {
+    const productName = `${product.name}${Object.entries(variants || {}).map(([type, value]) => ` (${type}: ${value})`).join('')}`;
+    
+    return {
+      items: [{
+        id: product.id.toString(),
+        name: productName,
+        price: total,
+        quantity: 1, // Total already includes quantity
+        image: product.images[0].url,
+      }],
+      // Include design details for admin notifications
+      designDetails: {
+        designFiles: designFiles || [],
+        designPosition: designPosition,
+        designSize: designSize,
+        isCustomDesign: isCustomDesign || false,
+        productVariants: variants,
+        actualQuantity: quantity
+      }
+    };
+  };
+
+  // Order completion view
+  if (orderComplete && orderDetails) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <AlphaPrintHeader />
+        
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
+            <h1 className="text-4xl font-bold text-primary mb-4">Order Complete!</h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              Thank you for your custom order. Your design has been successfully processed.
+            </p>
+            
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Order Details</h3>
+                <div className="text-left space-y-2">
+                  <p><strong>Order ID:</strong> {orderDetails.paymentIntent?.id}</p>
+                  <p><strong>Amount:</strong> €{(orderDetails.paymentIntent?.amount / 100)?.toFixed(2)}</p>
+                  <p><strong>Status:</strong> {orderDetails.paymentIntent?.status}</p>
+                  <p><strong>Date:</strong> {new Date().toLocaleDateString()}</p>
+                  <p><strong>Production:</strong> 3-5 business days</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button onClick={() => navigate('/alphaprint/products')} className="bg-primary hover:bg-primary/90">
+                Create Another Design
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setOrderComplete(false);
+                  setOrderDetails(null);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </main>
+
+        <AlphaPrintFooter />
+      </div>
+    );
+  }
+
+  // Checkout view
+  if (showCheckout) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <AlphaPrintHeader />
+        
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowCheckout(false)}
+                className="mb-4"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Review
+              </Button>
+              <h1 className="text-4xl font-bold text-primary text-center">Complete Your Order</h1>
+            </div>
+            
+            <CheckoutForm
+              paymentData={preparePaymentData()}
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+            />
+          </div>
+        </main>
+
+        <AlphaPrintFooter />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -166,7 +292,7 @@ const AlphaPrintReview = () => {
                   <div>
                     <p className="font-medium">Shipping</p>
                     <p className="text-sm text-muted-foreground">
-                      {shipping === 0 ? "Free shipping (order over $50)" : "Standard shipping: $9.99"}
+                      {shipping === 0 ? "Free shipping (order over €50)" : "Standard shipping: €9.99"}
                     </p>
                   </div>
                 </div>
@@ -190,36 +316,40 @@ const AlphaPrintReview = () => {
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
                   <span>Base Price:</span>
-                  <span>${basePrice.toFixed(2)}</span>
+                  <span>€{basePrice.toFixed(2)}</span>
                 </div>
                 {variantPrices > 0 && (
                   <div className="flex justify-between">
                     <span>Options:</span>
-                    <span>+${variantPrices.toFixed(2)}</span>
+                    <span>+€{variantPrices.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>Quantity ({quantity}):</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>€{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Tax (8%):</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>€{tax.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Shipping:</span>
-                  <span>{shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? "FREE" : `€${shipping.toFixed(2)}`}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total:</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>€{total.toFixed(2)}</span>
                 </div>
               </CardContent>
             </Card>
 
             <div className="space-y-3">
-              <Button className="w-full h-12" size="lg">
+              <Button 
+                className="w-full h-12" 
+                size="lg"
+                onClick={handleProceedToCheckout}
+              >
                 <CreditCard className="mr-2 h-5 w-5" />
                 Place Order
               </Button>

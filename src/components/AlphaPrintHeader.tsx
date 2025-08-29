@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, ShoppingCart, User, LogOut, Settings } from "lucide-react";
+import { Menu, ShoppingCart, User, LogOut, Settings, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import alphaprintLogo from "@/assets/alphaprint-logo-new.png";
 
 export const AlphaPrintHeader = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,7 +73,7 @@ export const AlphaPrintHeader = () => {
           {/* Logo */}
           <Link to="/alphaprint" className="flex items-center space-x-2">
             <img 
-              src={alphaprintLogo} 
+              src="/alphaprint-logo.png" 
               alt="AlphaPrint" 
               className="h-32 w-auto filter brightness-0 invert"
             />
@@ -117,6 +116,15 @@ export const AlphaPrintHeader = () => {
                     <Settings className="h-4 w-4 mr-2" />
                     Profile Settings
                   </DropdownMenuItem>
+                  {user.email === 'shazze@silverbacktreatment.se' && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate('/admin/dashboard')}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />

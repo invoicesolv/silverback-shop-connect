@@ -3,6 +3,10 @@ import { Product } from "@/types/alphaprint";
 import customDropShoulderHoodie from "@/assets/custom-drop-shoulder-hoodie.avif";
 import cleanBlackTshirt from "@/assets/clean-black-tshirt.jpg";
 import premiumCustomCap from "@/assets/premium-custom-cap.jpg";
+import silverbackSnapbackFront from "@/assets/silverback-snapback-front.jpg";
+import silverbackSnapbackBack from "@/assets/silverback-snapback-back.jpg";
+import silverbackSnapbackFemaleModel from "@/assets/silverback-snapback-female-model.jpg";
+import silverbackSnapbackMaleModel from "@/assets/silverback-snapback-male-model.jpg";
 // Existing images
 import blackHoodieFront from "@/assets/black-hoodie-front-new.jpg";
 import blackHoodieBack from "@/assets/black-hoodie-back-new.jpg";
@@ -27,9 +31,9 @@ export const alphaprintProducts: Product[] = [
   {
     id: "premium-hoodie",
     name: "Premium Cotton Hoodie",
-    description: "Ultra-soft premium cotton hoodie with spacious front pocket and adjustable drawstring hood. Perfect for custom designs and logos.",
+    description: "Ultra-soft premium cotton hoodie with spacious front pocket and adjustable drawstring hood. Perfect for custom designs and logos. Starting price - logo printing costs additional depending on design complexity.",
     category: "hoodies",
-    basePrice: 45.99,
+    basePrice: 18.20,
     features: [
       "100% Premium Cotton",
       "Pre-shrunk for perfect fit",
@@ -133,9 +137,9 @@ export const alphaprintProducts: Product[] = [
   {
     id: "classic-tee",
     name: "Classic Cotton T-Shirt",
-    description: "Soft, comfortable classic fit t-shirt made from high-quality cotton. Ideal for everyday wear and custom printing.",
+    description: "Soft, comfortable classic fit t-shirt made from high-quality cotton. Ideal for everyday wear and custom printing. Starting price - logo printing costs additional depending on design complexity.",
     category: "t-shirts",
-    basePrice: 18.99,
+    basePrice: 10.00,
     features: [
       "100% Ring-spun Cotton",
       "Classic fit",
@@ -229,35 +233,62 @@ export const alphaprintProducts: Product[] = [
     ]
   },
   {
-    id: "snapback-cap",
-    name: "Premium Snapback Cap",
-    description: "Structured snapback cap with flat brim and adjustable snap closure. Perfect for embroidery and custom designs.",
+    id: "silverback-snapback",
+    name: "Silverback Treatment Snapback Cap",
+    description: "Official Silverback Treatment snapback cap featuring our signature logo. Premium quality black trucker-style cap with mesh back panels and adjustable snap closure. Perfect for streetwear enthusiasts and brand supporters.",
     category: "caps",
-    basePrice: 24.99,
+    basePrice: 12.00,
     features: [
-      "Structured 6-panel design",
-      "Flat brim",
-      "Snapback closure",
-      "Cotton twill construction",
+      "Official Silverback Treatment branding",
+      "Structured 6-panel trucker design",
+      "Mesh back panels for breathability",
+      "Flat brim with curved option",
+      "Adjustable snapback closure",
+      "Embroidered logo on front",
+      "Premium cotton twill front panels",
       "Moisture-wicking sweatband",
-      "One size fits most"
+      "One size fits most (adjustable)",
+      "Unisex design"
     ],
     images: [
       {
-        id: "cap-premium-custom",
-        url: premiumCustomCap,
-        alt: "Premium Custom Snapback Cap",
+        id: "silverback-snapback-main",
+        url: silverbackSnapbackFront,
+        alt: "Silverback Treatment Snapback Cap - Front View",
         isPrimary: true,
-        color: "multicolor",
+        color: "black",
         angle: "front"
+      },
+      {
+        id: "silverback-snapback-back",
+        url: silverbackSnapbackBack,
+        alt: "Silverback Treatment Snapback Cap - Back View",
+        isPrimary: false,
+        color: "black",
+        angle: "back"
+      },
+      {
+        id: "silverback-snapback-model-female",
+        url: silverbackSnapbackFemaleModel,
+        alt: "Silverback Treatment Snapback Cap - Female Model",
+        isPrimary: false,
+        color: "black",
+        angle: "model"
+      },
+      {
+        id: "silverback-snapback-model-male",
+        url: silverbackSnapbackMaleModel,
+        alt: "Silverback Treatment Snapback Cap - Male Model",
+        isPrimary: false,
+        color: "black",
+        angle: "model"
       }
     ],
     variants: [
-      // Colors
-      { id: "cap-color-black", type: "color", name: "Color", value: "Black", priceModifier: 0, stock: 100 },
-      { id: "cap-color-white", type: "color", name: "Color", value: "White", priceModifier: 0, stock: 80 },
-      { id: "cap-color-navy", type: "color", name: "Color", value: "Navy", priceModifier: 1, stock: 60 },
-      { id: "cap-color-red", type: "color", name: "Color", value: "Red", priceModifier: 1, stock: 40 }
+      // Main color (black with mesh back)
+      { id: "silverback-cap-color-black", type: "color", name: "Color", value: "Black", priceModifier: 0, stock: 150 },
+      // Size (one size fits most, but keeping for potential future expansion)
+      { id: "silverback-cap-size-osfa", type: "size", name: "Size", value: "One Size Fits All", priceModifier: 0, stock: 150 }
     ]
   }
 ];

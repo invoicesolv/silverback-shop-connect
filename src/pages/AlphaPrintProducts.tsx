@@ -101,7 +101,7 @@ const AlphaPrintProducts = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <Label>Product: {selectedProduct.name}</Label>
-                    <p className="text-sm text-muted-foreground">Base: ${selectedProduct.basePrice}</p>
+                    <p className="text-sm text-muted-foreground">Base: €{selectedProduct.basePrice}</p>
                   </div>
                   
                   {/* Group variants by type to avoid duplicates */}
@@ -125,7 +125,7 @@ const AlphaPrintProducts = () => {
                         <SelectContent>
                           {(variants as any[]).map((variant: any) => (
                             <SelectItem key={variant.value} value={variant.value}>
-                              {variant.value} {variant.priceModifier > 0 && `(+$${variant.priceModifier})`}
+                              {variant.value} {variant.priceModifier > 0 && `(+€${variant.priceModifier})`}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -162,7 +162,7 @@ const AlphaPrintProducts = () => {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold">Total:</span>
-                      <span className="text-2xl font-bold text-primary">${totalPrice.toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-primary">€{totalPrice.toFixed(2)}</span>
                     </div>
                   </div>
                   
@@ -228,7 +228,7 @@ const AlphaPrintProducts = () => {
                       {product.description}
                     </CardDescription>
                     <div className="text-xl font-bold text-primary">
-                      ${product.basePrice}
+                      €{product.basePrice}
                       <span className="text-sm font-normal text-muted-foreground ml-1">starting</span>
                     </div>
                   </CardContent>

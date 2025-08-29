@@ -205,8 +205,8 @@ const AlphaPrintDesign = () => {
     setUploadedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  // Handle drag functionality for design positioning
-  const handleMouseDown = (e: React.MouseEvent) => {
+  // Handle drag functionality for design positioning - supports both mouse and touch
+  const handlePointerDown = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -215,15 +215,20 @@ const AlphaPrintDesign = () => {
     const previewContainer = e.currentTarget.parentElement?.parentElement;
     if (!previewContainer) return;
     
-    const startX = e.clientX;
-    const startY = e.clientY;
+    // Get initial position from mouse or touch
+    const startX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+    const startY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
     const startPosition = { ...designPosition };
     
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    const handlePointerMove = (moveEvent: MouseEvent | TouchEvent) => {
       moveEvent.preventDefault();
       
-      const deltaX = moveEvent.clientX - startX;
-      const deltaY = moveEvent.clientY - startY;
+      // Get current position from mouse or touch
+      const currentX = 'clientX' in moveEvent ? moveEvent.clientX : (moveEvent as TouchEvent).touches[0].clientX;
+      const currentY = 'clientY' in moveEvent ? moveEvent.clientY : (moveEvent as TouchEvent).touches[0].clientY;
+      
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
       
       const rect = previewContainer.getBoundingClientRect();
       
@@ -241,15 +246,20 @@ const AlphaPrintDesign = () => {
       setDesignPosition({ x: newX, y: newY });
     };
     
-    const handleMouseUp = (upEvent: MouseEvent) => {
+    const handlePointerUp = (upEvent: MouseEvent | TouchEvent) => {
       upEvent.preventDefault();
       setIsDragging(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handlePointerMove as EventListener);
+      document.removeEventListener('mouseup', handlePointerUp as EventListener);
+      document.removeEventListener('touchmove', handlePointerMove as EventListener);
+      document.removeEventListener('touchend', handlePointerUp as EventListener);
     };
     
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    // Add both mouse and touch event listeners
+    document.addEventListener('mousemove', handlePointerMove as EventListener);
+    document.addEventListener('mouseup', handlePointerUp as EventListener);
+    document.addEventListener('touchmove', handlePointerMove as EventListener);
+    document.addEventListener('touchend', handlePointerUp as EventListener);
   };
 
   const handlePreviewMouseMove = (e: React.MouseEvent) => {
@@ -274,24 +284,29 @@ const AlphaPrintDesign = () => {
     setDesignSize(newSize);
   };
 
-  // Resize handles functionality
-  const handleResizeStart = (e: React.MouseEvent, direction: string) => {
+  // Resize handles functionality - supports both mouse and touch
+  const handleResizeStart = (e: React.MouseEvent | React.TouchEvent, direction: string) => {
     e.preventDefault();
     e.stopPropagation();
     
     console.log(`Starting resize in direction: ${direction}`);
     
-    const startX = e.clientX;
-    const startY = e.clientY;
+    // Get initial position from mouse or touch
+    const startX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+    const startY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
     const startSize = designSize;
     
     setIsResizing(true);
     
-    const handleMouseMove = (moveEvent: MouseEvent) => {
+    const handlePointerMove = (moveEvent: MouseEvent | TouchEvent) => {
       moveEvent.preventDefault();
       
-      const deltaX = moveEvent.clientX - startX;
-      const deltaY = moveEvent.clientY - startY;
+      // Get current position from mouse or touch
+      const currentX = 'clientX' in moveEvent ? moveEvent.clientX : (moveEvent as TouchEvent).touches[0].clientX;
+      const currentY = 'clientY' in moveEvent ? moveEvent.clientY : (moveEvent as TouchEvent).touches[0].clientY;
+      
+      const deltaX = currentX - startX;
+      const deltaY = currentY - startY;
       
       let sizeDelta = 0;
       
@@ -330,17 +345,22 @@ const AlphaPrintDesign = () => {
       setDesignSize(newSize);
     };
     
-    const handleMouseUp = (upEvent: MouseEvent) => {
+    const handlePointerUp = (upEvent: MouseEvent | TouchEvent) => {
       upEvent.preventDefault();
       console.log('Resize ended');
       
       setIsResizing(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handlePointerMove as EventListener);
+      document.removeEventListener('mouseup', handlePointerUp as EventListener);
+      document.removeEventListener('touchmove', handlePointerMove as EventListener);
+      document.removeEventListener('touchend', handlePointerUp as EventListener);
     };
     
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    // Add both mouse and touch event listeners
+    document.addEventListener('mousemove', handlePointerMove as EventListener);
+    document.addEventListener('mouseup', handlePointerUp as EventListener);
+    document.addEventListener('touchmove', handlePointerMove as EventListener);
+    document.addEventListener('touchend', handlePointerUp as EventListener);
   };
 
   // Resize buttons handlers
@@ -576,7 +596,8 @@ const AlphaPrintDesign = () => {
                         zIndex: 2,
                         cursor: isDragging ? 'grabbing' : 'grab'
                       }}
-                      onMouseDown={handleMouseDown}
+                      onMouseDown={handlePointerDown}
+                      onTouchStart={handlePointerDown}
                     >
                       <img
                         src={uploadedFiles[0].url}
@@ -594,43 +615,55 @@ const AlphaPrintDesign = () => {
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
                         {/* Corner handles */}
                         <div 
-                          className="absolute -top-2 -left-2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-nw-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -top-2 -left-2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-nw-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'nw')}
+                          onTouchStart={(e) => handleResizeStart(e, 'nw')}
                         />
                         <div 
-                          className="absolute -top-2 -right-2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-ne-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-ne-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'ne')}
+                          onTouchStart={(e) => handleResizeStart(e, 'ne')}
                         />
                         <div 
-                          className="absolute -bottom-2 -left-2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-sw-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -bottom-2 -left-2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-sw-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'sw')}
+                          onTouchStart={(e) => handleResizeStart(e, 'sw')}
                         />
                         <div 
-                          className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-se-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -bottom-2 -right-2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-se-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'se')}
+                          onTouchStart={(e) => handleResizeStart(e, 'se')}
                         />
                         
                         {/* Edge handles */}
                         <div 
-                          className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-n-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-n-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'n')}
+                          onTouchStart={(e) => handleResizeStart(e, 'n')}
                         />
                         <div 
-                          className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-s-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-s-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 's')}
+                          onTouchStart={(e) => handleResizeStart(e, 's')}
                         />
                         <div 
-                          className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-w-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -left-2 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-w-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'w')}
+                          onTouchStart={(e) => handleResizeStart(e, 'w')}
                         />
                         <div 
-                          className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-blue-500 border border-white rounded-full cursor-e-resize shadow-md hover:bg-blue-600 transition-colors" 
+                          className="absolute -right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-blue-500 border border-white rounded-full cursor-e-resize shadow-md hover:bg-blue-600 transition-colors" 
                           onMouseDown={(e) => handleResizeStart(e, 'e')}
+                          onTouchStart={(e) => handleResizeStart(e, 'e')}
                         />
                         
                         {/* Center drag handle for moving */}
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-green-500 border-2 border-white rounded-full cursor-move shadow-md hover:bg-green-600 transition-colors flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full" />
+                        <div 
+                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-green-500 border-2 border-white rounded-full cursor-move shadow-md hover:bg-green-600 transition-colors flex items-center justify-center"
+                          onMouseDown={handlePointerDown}
+                          onTouchStart={handlePointerDown}
+                        >
+                          <div className="w-3 h-3 bg-white rounded-full" />
                         </div>
                       </div>
                       
@@ -642,7 +675,7 @@ const AlphaPrintDesign = () => {
                       {/* Interactive hints */}
                       {!isDragging && !isResizing && (
                         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs text-muted-foreground bg-background/90 px-2 py-1 rounded opacity-0 hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                          Drag to move • Scroll to resize • Hover for handles
+                          Drag to move • Touch handles to resize • Scroll to resize
                         </div>
                       )}
                     </div>

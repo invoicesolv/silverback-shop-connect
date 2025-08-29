@@ -12,40 +12,29 @@ import whiteTeeFront from "@/assets/white-tee-front.jpg";
 import whiteTeeBack from "@/assets/white-tee-back.jpg";
 import blackShorts from "@/assets/black-shorts.jpg";
 import militaryGreenShorts from "@/assets/military-green-shorts.jpg";
+import silverbackSnapbackFront from "@/assets/silverback-snapback-front.jpg";
+import silverbackSnapbackFemaleModel from "@/assets/silverback-snapback-female-model.jpg";
 
 // Extended products data
 const allProducts = [
   {
-    id: 1,
-    name: "Silverback White Hoodie",
-    description: "Premium white hoodie with iconic Silverback Treatment logo",
-    price: 52,
+    id: 101,
+    name: "Silverback Premium Hoodie",
+    description: "Premium hoodie with iconic Silverback Treatment logo - Available in Black and White",
+    price: 63,
     originalPrice: null,
     image: whiteHoodieFront,
-    hoverImage: whiteHoodieBack,
+    hoverImage: blackHoodieFront,
     rating: 4.9,
-    reviews: 145,
+    reviews: 277, // Combined reviews from both colors
     badge: "Best Seller",
     category: "Hoodies"
   },
   {
-    id: 2,
-    name: "Silverback Black Hoodie",
-    description: "Sleek black hoodie with embroidered Silverback logo",
-    price: 52,
-    originalPrice: null,
-    image: blackHoodieFront,
-    hoverImage: blackHoodieBack,
-    rating: 4.8,
-    reviews: 132,
-    badge: "New",
-    category: "Hoodies"
-  },
-  {
-    id: 3,
+    id: 102,
     name: "Classic White Tee",
     description: "Essential cotton t-shirt with signature logo placement",
-    price: 35,
+    price: 42,
     originalPrice: null,
     image: whiteTeeFront,
     hoverImage: whiteTeeBack,
@@ -55,17 +44,30 @@ const allProducts = [
     category: "T-Shirts"
   },
   {
-    id: 4,
+    id: 103,
     name: "Silverback Shorts",
     description: "Premium shorts with signature Silverback branding",
-    price: 25,
+    price: 30,
     originalPrice: null,
-    image: blackShorts,
-    hoverImage: militaryGreenShorts,
+    image: militaryGreenShorts,
+    hoverImage: blackShorts,
     rating: 4.6,
     reviews: 156,
     badge: null,
     category: "Shorts"
+  },
+  {
+    id: 104,
+    name: "Silverback Treatment Snapback",
+    description: "Official Silverback Treatment snapback cap with embroidered logo",
+    price: 15,
+    originalPrice: null,
+    image: silverbackSnapbackFemaleModel,
+    hoverImage: silverbackSnapbackFront,
+    rating: 4.8,
+    reviews: 94,
+    badge: "New",
+    category: "Accessories"
   }
 ];
 

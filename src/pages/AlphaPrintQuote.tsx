@@ -104,7 +104,7 @@ const AlphaPrintQuote = () => {
       }
 
       // Create quote request
-      const { data, error } = await supabase
+      const { data: savedQuote, error } = await supabase
         .from('quote_requests')
         .insert({
           customer_info: {
@@ -124,33 +124,60 @@ const AlphaPrintQuote = () => {
 
       if (error) throw error;
 
-      // Send email notifications
+      console.log('✅ Quote request saved to database:', savedQuote);
+
+      // Send email notifications with complete saved data
       try {
-        // Prepare email data
+        // Prepare email data using the saved database record
         const emailData = {
-          name: formData.name,
-          email: formData.email,
-          company: formData.company,
-          phone: formData.phone,
-          projectDescription: formData.projectDescription,
-          quantity: parseInt(formData.quantity),
-          deadline: formData.deadline?.toISOString(),
-          requirements: formData.requirements,
-          attachments: attachmentData,
+          // Customer info from saved record
+          name: savedQuote.customer_info.name,
+          email: savedQuote.customer_info.email,
+          company: savedQuote.customer_info.company || '',
+          phone: savedQuote.customer_info.phone || '',
+          
+          // Project details from saved record
+          projectDescription: savedQuote.project_description,
+          quantity: savedQuote.quantity,
+          deadline: savedQuote.deadline,
+          requirements: savedQuote.requirements || [],
+          attachments: savedQuote.attachments || [],
+          
+          // Database metadata
+          quoteId: savedQuote.id,
+          submittedAt: savedQuote.created_at,
+          status: savedQuote.status || 'pending'
         };
 
-        // Send notification to business owner
+        console.log('📧 Sending emails with saved data:', emailData);
+
+        // Send notification to business owner with complete data
         const businessNotification = await sendQuoteNotificationEmail(emailData);
         
         // Send confirmation to customer
-        const customerConfirmation = await sendCustomerConfirmationEmail(formData.email, formData.name);
+        const customerConfirmation = await sendCustomerConfirmationEmail(
+          savedQuote.customer_info.email, 
+          savedQuote.customer_info.name
+        );
         
-        if (businessNotification.success || customerConfirmation.success) {
-          console.log('Email notifications sent successfully');
+        if (businessNotification.success && customerConfirmation.success) {
+          console.log('✅ Both email notifications sent successfully');
+        } else if (businessNotification.success) {
+          console.log('✅ Business notification sent, customer email may have failed');
+        } else if (customerConfirmation.success) {
+          console.log('✅ Customer confirmation sent, business notification may have failed');
+        } else {
+          console.log('⚠️ Both emails may have failed, but quote is saved');
         }
       } catch (emailError) {
-        console.error('Email notification failed (but quote saved):', emailError);
-        // Don't fail the whole process if email fails
+        console.error('❌ Email notification failed (but quote saved successfully):', emailError);
+        
+        // Still show success to user since quote was saved
+        toast({
+          title: "Quote saved with email issues",
+          description: "Your quote was saved but email notifications may have failed. We'll still process your request.",
+          variant: "default",
+        });
       }
 
       toast({
@@ -495,8 +522,7 @@ const AlphaPrintQuote = () => {
                 </p>
                 <div className="space-y-2 text-sm">
                   <p><strong>Email:</strong> info@silverbacktreatment.se</p>
-                  <p><strong>Support:</strong> support@silverbacktreatment.se</p>
-                  <p><strong>Phone:</strong> +46 (0) 123 456 789</p>
+                  <p><strong>Phone:</strong> +34 600 013 960</p>
                   <p><strong>Hours:</strong> Mon-Fri 9AM-6PM CET</p>
                 </div>
               </CardContent>

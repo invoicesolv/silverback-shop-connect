@@ -56,6 +56,39 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscriptions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_active: boolean
+          source: string | null
+          subscribed_at: string
+          unsubscribe_token: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_active?: boolean
+          source?: string | null
+          subscribed_at?: string
+          unsubscribe_token?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_active?: boolean
+          source?: string | null
+          subscribed_at?: string
+          unsubscribe_token?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -222,7 +255,7 @@ export type Database = {
           id: string
           phone: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           company?: string | null
@@ -232,7 +265,7 @@ export type Database = {
           id?: string
           phone?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           company?: string | null
@@ -242,7 +275,7 @@ export type Database = {
           id?: string
           phone?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }

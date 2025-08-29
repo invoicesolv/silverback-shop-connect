@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ContactModal } from "./ContactModal";
 import { CartSheet } from "./CartSheet";
 import { Menu, ShoppingCart } from "lucide-react";
@@ -11,6 +12,7 @@ const logoImage = "https://todosmash.es/wp-content/uploads/2025/08/silverback_sy
 export const Header = () => {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { getTotalItems } = useCart();
   const cartItems = getTotalItems();
 
@@ -75,14 +77,60 @@ export const Header = () => {
               </Button>
             </Link>
             
-            {/* Mobile menu button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden hover:bg-accent"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
+            {/* Mobile menu */}
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden hover:bg-accent"
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="bg-background text-foreground">
+                <div className="flex flex-col space-y-4 mt-8">
+                  <Link 
+                    to="/" 
+                    className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Home
+                  </Link>
+                  <Link 
+                    to="/products" 
+                    className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Products
+                  </Link>
+                  <Link 
+                    to="/about" 
+                    className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    About
+                  </Link>
+                  <Link 
+                    to="/alphaprint" 
+                    className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Alpha Print
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsContactOpen(true);
+                    }}
+                    className="border-primary/20 hover:border-primary justify-start"
+                  >
+                    Contact
+                  </Button>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>

@@ -33,7 +33,7 @@ export default function CustomerService() {
                 <p className="text-muted-foreground mb-4">
                   Speak directly with our customer service team
                 </p>
-                <p className="font-semibold">+46 (0) 123 456 789</p>
+                <p className="font-semibold">+34 600 013 960</p>
               </CardContent>
             </Card>
 
@@ -46,7 +46,7 @@ export default function CustomerService() {
                 <p className="text-muted-foreground mb-4">
                   Send us a detailed message and we'll respond promptly
                 </p>
-                <p className="font-semibold">support@silverbacktreatment.se</p>
+                <p className="font-semibold">info@silverbacktreatment.se</p>
               </CardContent>
             </Card>
 

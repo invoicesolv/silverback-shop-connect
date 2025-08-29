@@ -25,20 +25,26 @@ import blackShorts from "@/assets/black-shorts.jpg";
 import militaryGreenShorts from "@/assets/military-green-shorts.jpg";
 import whiteTeeFront from "@/assets/white-tee-front.jpg";
 import whiteTeeBack from "@/assets/white-tee-back.jpg";
+import silverbackSnapbackFront from "@/assets/silverback-snapback-front.jpg";
+import silverbackSnapbackFemaleModel from "@/assets/silverback-snapback-female-model.jpg";
+import silverbackSnapbackBack from "@/assets/silverback-snapback-back.jpg";
+import silverbackSnapbackMaleModel from "@/assets/silverback-snapback-male-model.jpg";
+import silverbackSnapbackVideo from "@/assets/silverback-snapback-video.mp4";
+import blackPantsPng from "@/assets/black-pants.png";
 
 // Extended products data (same as in Products.tsx)
 const allProducts = [
   {
-    id: 1,
-    name: "Silverback White Hoodie",
-    description: "Premium white hoodie with iconic Silverback Treatment logo",
-    price: 52,
+    id: 101,
+    name: "Silverback Premium Hoodie",
+    description: "Premium hoodie with iconic Silverback Treatment logo - Available in Black and White",
+    price: 63,
     originalPrice: null,
     image: whiteHoodieFront,
-    hoverImage: whiteHoodieBack,
-    images: [whiteHoodieFront, whiteHoodieBack],
+    hoverImage: blackHoodieFront,
+    images: [whiteHoodieFront, whiteHoodieBack, blackHoodieFront, blackHoodieBack],
     rating: 4.9,
-    reviews: 145,
+    reviews: 277,
     badge: "Best Seller",
     category: "Hoodies",
     material: "80% Cotton, 20% Polyester",
@@ -46,29 +52,13 @@ const allProducts = [
     features: ["Soft fleece lining", "Adjustable drawstring hood", "Kangaroo pocket", "Ribbed cuffs and hem"]
   },
   {
-    id: 2,
-    name: "Silverback Black Hoodie",
-    description: "Sleek black hoodie with embroidered Silverback logo",
-    price: 52,
-    originalPrice: null,
-    image: blackHoodieFront,
-    hoverImage: blackHoodieBack,
-    images: [blackHoodieFront, blackHoodieBack],
-    rating: 4.8,
-    reviews: 132,
-    badge: "New",
-    category: "Hoodies",
-    material: "80% Cotton, 20% Polyester",
-    care: "Machine wash cold, tumble dry low",
-    features: ["Soft fleece lining", "Adjustable drawstring hood", "Kangaroo pocket", "Ribbed cuffs and hem"]
-  },
-  {
-    id: 3,
-    name: "Silverback T-Shirt",
+    id: 102,
+    name: "Classic White Tee",
     description: "Essential cotton t-shirt with signature logo placement",
-    price: 35,
+    price: 42,
     originalPrice: null,
     image: whiteTeeFront,
+    hoverImage: whiteTeeBack,
     images: [whiteTeeFront, whiteTeeBack, whiteTeeNewFront],
     rating: 4.9,
     reviews: 89,
@@ -79,14 +69,14 @@ const allProducts = [
     features: ["Pre-shrunk fabric", "Tagless label", "Classic fit", "Reinforced seams"]
   },
   {
-    id: 4,
+    id: 103,
     name: "Silverback Shorts",
-    description: "Comfortable streetwear shorts with premium fabric",
-    price: 42,
+    description: "Premium shorts with signature Silverback branding",
+    price: 30,
     originalPrice: null,
-    image: blackShorts,
-    hoverImage: militaryGreenShorts,
-    images: [blackShorts, militaryGreenShorts],
+    image: militaryGreenShorts,
+    hoverImage: blackShorts,
+    images: [militaryGreenShorts, blackShorts],
     rating: 4.6,
     reviews: 156,
     badge: null,
@@ -94,6 +84,24 @@ const allProducts = [
     material: "65% Cotton, 35% Polyester",
     care: "Machine wash cold, hang dry",
     features: ["Premium fabric", "Elastic waistband", "Perfect fit", "Durable construction"]
+  },
+  {
+    id: 104,
+    name: "Silverback Treatment Snapback",
+    description: "Official Silverback Treatment snapback cap with embroidered logo",
+    price: 15,
+    originalPrice: null,
+    image: silverbackSnapbackFemaleModel,
+    hoverImage: silverbackSnapbackFront,
+    images: [silverbackSnapbackFemaleModel, silverbackSnapbackFront, silverbackSnapbackBack, silverbackSnapbackMaleModel],
+    video: silverbackSnapbackVideo,
+    rating: 4.8,
+    reviews: 94,
+    badge: "New",
+    category: "Accessories",
+    material: "100% Cotton Front, Mesh Back Panels",
+    care: "Spot clean only, air dry",
+    features: ["Embroidered logo", "Adjustable snapback", "Structured design", "One size fits all"]
   }
 ];
 
@@ -130,14 +138,23 @@ const ProductDetail = () => {
   }
 
   const getProductImage = () => {
-    if (product.category === "Shorts" && selectedColor === "Military Green" && product.hoverImage) {
-      return product.hoverImage;
+    // If user has selected a specific thumbnail image, show that
+    if (product.images && product.images[selectedImage]) {
+      return product.images[selectedImage];
+    }
+    
+    if (product.category === "Shorts" && selectedColor) {
+      const colorImages: { [key: string]: string } = {
+        "Black": blackPantsPng,
+        "Military Green": militaryGreenShorts
+      };
+      return colorImages[selectedColor] || product.image;
     }
     
     if (product.category === "Hoodies" && selectedColor) {
       const colorImages: { [key: string]: string } = {
-        "White": product.id === 1 ? product.image : "",
-        "Black": product.id === 2 ? product.image : "",
+        "White": product.id === 101 ? product.image : "",
+        "Black": product.id === 101 ? blackHoodieFront : "",
         "Blue": blueHoodieFront,
         "Pink": pinkHoodieFront
       };
@@ -185,6 +202,8 @@ const ProductDetail = () => {
       return;
     }
 
+    // Accessories don't need size/color validation
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -196,6 +215,8 @@ const ProductDetail = () => {
 
     const cartMessage = (product.category === "Shorts" || product.category === "Hoodies" || product.category === "T-Shirts")
       ? `${product.name} (Size ${selectedSize}, ${selectedColor}) has been added to your cart.`
+      : product.category === "Accessories"
+      ? `${product.name} has been added to your cart.`
       : `${product.name} (Size ${selectedSize}) has been added to your cart.`;
 
     toast({
@@ -271,6 +292,23 @@ const ProductDetail = () => {
                   ))}
                 </div>
               )}
+              
+              {/* Video Section for Snapback */}
+              {product.id === 104 && product.video && (
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Product Video</h3>
+                  <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+                    <video
+                      controls
+                      className="w-full h-full object-cover"
+                      poster={product.image}
+                    >
+                      <source src={product.video} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Product Info */}
@@ -301,13 +339,16 @@ const ProductDetail = () => {
               </div>
 
               {/* Price */}
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-price">€{product.price}</span>
-                {product.originalPrice && (
-                  <span className="text-xl text-muted-foreground line-through">
-                    €{product.originalPrice}
-                  </span>
-                )}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-price">€{Math.round(product.price)}</span>
+                  {product.originalPrice && (
+                    <span className="text-xl text-muted-foreground line-through">
+                      €{Math.round(product.originalPrice)}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground">VAT 21% included</p>
               </div>
 
               <Separator />
@@ -349,6 +390,15 @@ const ProductDetail = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              )}
+
+              {/* One size fits all info for Accessories */}
+              {product.category === "Accessories" && (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground text-center">
+                    📏 One Size Fits All (Adjustable)
+                  </p>
                 </div>
               )}
 
@@ -403,7 +453,7 @@ const ProductDetail = () => {
                     <Truck className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium">Free Shipping</p>
-                      <p className="text-sm text-muted-foreground">On orders over €50</p>
+                      <p className="text-sm text-muted-foreground">On orders over €150</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -482,9 +532,10 @@ const ProductDetail = () => {
                 <div className="space-y-4">
                   <h3 className="font-semibold">Shipping Information</h3>
                   <div className="space-y-3 text-muted-foreground">
-                    <p>• <strong>Standard Shipping:</strong> 3-5 business days (Free on orders over €50)</p>
-                    <p>• <strong>Express Shipping:</strong> 1-2 business days (€9.99)</p>
-                    <p>• <strong>Custom orders:</strong> 5-7 business days</p>
+                    <p>• <strong>Spain Shipping:</strong> 3-5 business days (€10, Free on orders over €150)</p>
+                    <p>• <strong>Europe Shipping:</strong> 5-7 business days (€15, Free on orders over €150)</p>
+                    <p>• <strong>Express Shipping:</strong> 1-2 business days (Additional €5)</p>
+                    <p>• <strong>VAT:</strong> 21% included in all prices</p>
                     <p>• Orders placed before 2 PM are processed the same day</p>
                     <p>• We ship worldwide with tracking included</p>
                   </div>

@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Mail, MessageCircle, Instagram, Facebook, Twitter } from "lucide-react";
+import { Instagram, Facebook, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import { NewsletterSignup } from "@/components/NewsletterSignup";
 import alphaprintLogo from "@/assets/alphaprint-logo.png";
 
 export const Footer = () => {
@@ -125,20 +125,10 @@ export const Footer = () => {
           {/* Newsletter */}
           <div>
             <h4 className="font-semibold mb-4">Stay Updated</h4>
-            <p className="text-muted-foreground text-sm mb-6">
-              Get the latest updates on new products and exclusive offers.
-            </p>
-            <div className="space-y-3">
-              <div className="flex gap-3">
-                <Input 
-                  placeholder="Enter your email" 
-                  className="bg-background border-border"
-                />
-                <Button size="icon" className="bg-primary hover:bg-primary/90">
-                  <Mail className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+            <NewsletterSignup 
+              placeholder="Enter your email"
+              description="Get the latest updates on new products and exclusive offers."
+            />
           </div>
         </div>
 

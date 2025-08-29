@@ -13,6 +13,7 @@ import blackTeeFront from "@/assets/black-tee-front.jpg";
 import wineRedTeeFront from "@/assets/wine-red-tee-front.jpg";
 import peachTeeFront from "@/assets/peach-tee-front.jpg";
 import whiteTeeNewFront from "@/assets/white-tee-new-front.jpg";
+import blackPantsPng from "@/assets/black-pants.png";
 
 interface ProductCardProps {
   product: {
@@ -72,6 +73,8 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
       return;
     }
 
+    // Accessories like snapbacks typically don't need size/color selection
+
     addToCart({
       id: product.id,
       name: product.name,
@@ -83,6 +86,8 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
 
     const cartMessage = (product.category === "Shorts" || product.category === "Hoodies" || product.category === "T-Shirts")
       ? `${product.name} (Size ${selectedSize}, ${selectedColor}) has been added to your cart.`
+      : product.category === "Accessories"
+      ? `${product.name} has been added to your cart.`
       : `${product.name} (Size ${selectedSize}) has been added to your cart.`;
 
     toast({
@@ -92,14 +97,18 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
   };
 
   const getProductImage = () => {
-    if (product.category === "Shorts" && selectedColor === "Military Green" && product.hoverImage) {
-      return product.hoverImage;
+    if (product.category === "Shorts" && selectedColor) {
+      const colorImages: { [key: string]: string } = {
+        "Black": blackPantsPng,
+        "Military Green": product.image
+      };
+      return colorImages[selectedColor] || product.image;
     }
     
     if (product.category === "Hoodies" && selectedColor) {
       const colorImages: { [key: string]: string } = {
-        "White": product.id === 1 ? product.image : "",
-        "Black": product.id === 2 ? product.image : "",
+        "White": product.id === 101 ? product.image : "",
+        "Black": product.id === 101 ? product.hoverImage || blackHoodieFront : "",
         "Blue": blueHoodieFront,
         "Pink": pinkHoodieFront
       };
@@ -134,7 +143,7 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
                 viewMode === "list" ? "w-64 h-48" : "w-full h-64"
               }`}
             />
-            {product.hoverImage && (product.id === 1 || product.id === 2 || product.id === 3) && (
+            {product.hoverImage && (product.id === 101 || product.id === 102 || product.id === 103 || product.id === 104) && !selectedColor && (
               <img
                 src={product.hoverImage}
                 alt={`${product.name} back view`}
@@ -206,18 +215,21 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
           {product.description}
         </p>
         
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl font-bold text-price">
-            €{product.price}
-          </span>
-          {product.originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              €{product.originalPrice}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl font-bold text-price">
+              €{Math.round(product.price)}
             </span>
-          )}
+            {product.originalPrice && (
+              <span className="text-sm text-muted-foreground line-through">
+                €{Math.round(product.originalPrice)}
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">VAT 21% included</p>
         </div>
 
-        {/* Size Selection */}
+        {/* Size Selection - Not needed for Accessories */}
         {(product.category === "Hoodies" || product.category === "T-Shirts" || product.category === "Shorts") && (
           <div className="mb-4">
             <label className="text-sm font-medium mb-2 block">Size</label>
@@ -236,7 +248,7 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
           </div>
         )}
 
-        {/* Color Selection for Hoodies and Shorts */}
+        {/* Color Selection - Not needed for Accessories */}
         {(product.category === "Shorts" || product.category === "Hoodies" || product.category === "T-Shirts") && (
           <div className="mb-4">
             <label className="text-sm font-medium mb-2 block">Color</label>
@@ -254,6 +266,15 @@ export const ProductCard = ({ product, favorites, onToggleFavorite, viewMode = "
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        )}
+
+        {/* One size fits all info for Accessories */}
+        {product.category === "Accessories" && (
+          <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+            <p className="text-sm text-muted-foreground text-center">
+              📏 One Size Fits All (Adjustable)
+            </p>
           </div>
         )}
 

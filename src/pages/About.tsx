@@ -14,9 +14,9 @@ const About = () => {
           {/* Hero Section */}
           <div className="text-center mb-16">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              <span className="text-gradient">ABOUT</span>
+              <span className="text-light-grey">ABOUT</span>
               <br />
-              <span className="text-foreground">SILVERBACK</span>
+              <span className="text-light-grey">SILVERBACK</span>
             </h1>
             <div className="max-w-4xl mx-auto">
               <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">

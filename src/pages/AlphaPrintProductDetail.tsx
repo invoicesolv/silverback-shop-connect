@@ -83,7 +83,7 @@ const AlphaPrintProductDetail = () => {
                 {product.description}
               </p>
               <div className="text-3xl font-bold text-primary mb-6">
-                ${product.basePrice}
+                €{product.basePrice}
                 <span className="text-lg font-normal text-muted-foreground ml-2">starting</span>
               </div>
             </div>

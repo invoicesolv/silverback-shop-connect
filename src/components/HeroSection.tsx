@@ -30,15 +30,10 @@ export const HeroSection = () => {
       
       <div className="relative container mx-auto px-4 py-24 flex items-center min-h-[600px]">
         <div className="max-w-2xl animate-slide-up mr-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6">
-            <Star className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Premium Treatment Solutions</span>
-          </div>
 
           {/* Main heading */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            <span className="text-gradient">SILVERBACK</span>
+            <span className="text-light-grey">SILVERBACK</span>
             <br />
             <span className="text-foreground">TREATMENT</span>
           </h1>

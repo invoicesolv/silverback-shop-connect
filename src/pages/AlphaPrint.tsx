@@ -137,12 +137,12 @@ const AlphaPrint = () => {
                       {product.description}
                     </CardDescription>
                     <div className="text-2xl font-bold text-primary">
-                      ${product.basePrice}
+                      €{product.basePrice}
                       <span className="text-sm font-normal text-muted-foreground ml-1">starting</span>
                     </div>
                   </CardContent>
                   <CardFooter className="p-6 pt-0">
-                    <Link to={`/alphaprint/products/${product.id}`} className="w-full">
+                    <Link to={`/alphaprint/product/${product.id}`} className="w-full">
                       <Button className="w-full">
                         Customize Now
                         <ArrowRight className="ml-2 h-4 w-4" />

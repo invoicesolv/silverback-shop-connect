@@ -17,6 +17,8 @@ interface CartContextType {
   updateQuantity: (id: number, quantity: number, size?: string, color?: string) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  getShippingCost: (country?: string) => number;
+  getFinalTotal: (country?: string) => number;
   clearCart: () => void;
 }
 
@@ -74,6 +76,32 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return items.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  const getShippingCost = (country?: string) => {
+    const subtotal = getTotalPrice();
+    
+    // Free shipping on orders over €150
+    if (subtotal >= 150) {
+      return 0;
+    }
+    
+    // Default to Europe shipping if no country specified
+    if (!country) {
+      return 15; // Europe shipping
+    }
+    
+    // Spain gets €10 shipping, all other Europe gets €15
+    if (country.toLowerCase() === 'spain' || country.toLowerCase() === 'es') {
+      return 10;
+    }
+    
+    // Default Europe shipping
+    return 15;
+  };
+
+  const getFinalTotal = (country?: string) => {
+    return getTotalPrice() + getShippingCost(country);
+  };
+
   const clearCart = () => {
     setItems([]);
   };
@@ -86,6 +114,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       updateQuantity,
       getTotalItems,
       getTotalPrice,
+      getShippingCost,
+      getFinalTotal,
       clearCart
     }}>
       {children}

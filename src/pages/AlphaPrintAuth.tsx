@@ -10,9 +10,11 @@ import { User, Mail, Lock, UserPlus, LogIn, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { sendWelcomeEmail } from "@/services/emailService";
+import { useNavigate } from "react-router-dom";
 
 const AlphaPrintAuth = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -102,7 +104,7 @@ const AlphaPrintAuth = () => {
       });
 
       // Redirect to products page
-      window.location.href = "/alphaprint/products";
+      navigate("/alphaprint/products");
       
     } catch (error: any) {
       toast({

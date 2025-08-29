@@ -18,12 +18,14 @@ import AlphaPrintDesigner from "./pages/AlphaPrintDesigner";
 import AlphaPrintReview from "./pages/AlphaPrintReview";
 import AlphaPrintQuote from "./pages/AlphaPrintQuote";
 import AlphaPrintAuth from "./pages/AlphaPrintAuth";
+import AlphaPrintProfile from "./pages/AlphaPrintProfile";
 import NotFound from "./pages/NotFound";
 import CustomerService from "./pages/CustomerService";
 import ShippingInfo from "./pages/ShippingInfo";
 import Returns from "./pages/Returns";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -48,11 +50,13 @@ function App() {
               <Route path="/alphaprint/review" element={<AlphaPrintReview />} />
               <Route path="/alphaprint/quote" element={<AlphaPrintQuote />} />
               <Route path="/alphaprint/auth" element={<AlphaPrintAuth />} />
+              <Route path="/alphaprint/profile" element={<AlphaPrintProfile />} />
               <Route path="/customer-service" element={<CustomerService />} />
               <Route path="/shipping-info" element={<ShippingInfo />} />
               <Route path="/returns" element={<Returns />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />

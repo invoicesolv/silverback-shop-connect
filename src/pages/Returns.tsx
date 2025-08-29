@@ -191,8 +191,8 @@ export default function Returns() {
                       <h3 className="font-semibold mb-2">Return Address</h3>
                       <div className="text-muted-foreground text-sm">
                         <p>Please contact our customer service team to receive the correct return address for your location.</p>
-                        <p className="mt-2 font-medium">Email: support@silverbacktreatment.se</p>
-                        <p>Phone: +46 (0) 123 456 789</p>
+                        <p className="mt-2 font-medium">Email: info@silverbacktreatment.se</p>
+                        <p>Phone: +34 600 013 960</p>
                       </div>
                     </div>
                     <div>
