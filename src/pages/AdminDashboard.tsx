@@ -336,7 +336,7 @@ const AdminDashboard = () => {
   const handleUpdateCode = async (code: DiscountCode) => {
     try {
       const headers = await getApiHeaders();
-      const url = getApiUrl(`/api/admin/discount-codes/${code.id}`);
+      const url = getApiUrl('/api/admin/discount-codes');
       const response = await fetch(url, {
         method: 'PUT',
         headers,
@@ -364,7 +364,7 @@ const AdminDashboard = () => {
 
     try {
       const headers = await getApiHeaders();
-      const url = getApiUrl(`/api/admin/discount-codes/${codeId}`);
+      const url = getApiUrl(`/api/admin/discount-codes?id=${codeId}`);
       const response = await fetch(url, {
         method: 'DELETE',
         headers
